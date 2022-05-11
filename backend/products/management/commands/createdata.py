@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from faker import Faker
 import faker.providers
-from api.models import Product
+from products.models import Product
 import random
 
 Content = [
