@@ -56,3 +56,10 @@ def api_home(request, *args, **kwargs):
     if instance:
         data = ProductSerializer(instance).data
     return Response(data)
+
+
+# @api_view(["POST"])
+# def api_home(request, *args, **kwargs):
+
+#     data = request.data
+#     return Response(data)
