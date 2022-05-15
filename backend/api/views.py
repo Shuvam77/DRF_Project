@@ -49,17 +49,22 @@ from products.serializers import ProductSerializer
 #     return Response(data)
 
 
-@api_view(["GET"])
-def api_home(request, *args, **kwargs):
-    instance = Product.objects.all().order_by("?").first()
-    data ={}
-    if instance:
-        data = ProductSerializer(instance).data
-    return Response(data)
-
-
-# @api_view(["POST"])
+# @api_view(["GET"])
 # def api_home(request, *args, **kwargs):
-
-#     data = request.data
+#     instance = Product.objects.all().order_by("?").first()
+#     data ={}
+#     if instance:
+#         data = ProductSerializer(instance).data
 #     return Response(data)
+
+
+@api_view(["POST"])
+def api_home(request, *args, **kwargs):
+
+    serializer = ProductSerializer(data = request.data)
+    if serializer.is_valid(raise_exception=True):
+
+        # instance = serializer.save()
+        print(serializer.data)
+        return Response(serializer.data)
+    return Response({"invalid": "Not good data title is required!"}, status=400 )
