@@ -3,8 +3,8 @@ import requests
 endpoint = "http://127.0.0.1:8000/api/products/"
 
 data = {
-    # "title":"Create API View4",
-    "content": "This is a test4",
+    "title":"Create One Class API View4",
+    # "content": "This is a test4",
     "price": 55.49
 }
 
