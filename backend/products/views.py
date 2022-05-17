@@ -2,6 +2,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework import generics, mixins, permissions, authentication
+from .permissions import IsStaffEditorPermissions
+
 
 from .models import Product
 from .serializers import ProductSerializer
@@ -44,12 +46,21 @@ class ProductMixinView(mixins.CreateModelMixin,
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    authentication_classes = [authentication.SessionAuthentication]
+    # permission_classes = [permissions.DjangoModelPermissions]
+    # permission_classes = [IsStaffEditorPermissions]
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
+
     #lookup_field = "pk"
 
 
 class ProductUpdateAPIView(generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    authentication_classes = [authentication.SessionAuthentication]
+    # permission_classes = [permissions.DjangoModelPermissions]
+    # permission_classes = [IsStaffEditorPermissions]
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
     lookup_field = 'pk'
 
     def perform_update(self, serializer):
@@ -61,6 +72,10 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
 class ProductDeleteAPIView(generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    # permission_classes = [permissions.DjangoModelPermissions]
+    # permission_classes = [IsStaffEditorPermissions]
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
+    authentication_classes = [authentication.SessionAuthentication]
     lookup_field = 'pk'
 
     def perform_destroy(self, instance):
@@ -71,7 +86,11 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # permission_classes = [permissions.DjangoModelPermissions]
+    # permission_classes = [IsStaffEditorPermissions]
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
+
 
     def perform_create(self, serializer):
         # serializer.save(user=self.request.user)
