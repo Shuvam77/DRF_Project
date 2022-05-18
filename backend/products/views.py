@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework import generics, mixins, permissions, authentication
 from api.authentication import TokenAuthentication
 from .permissions import IsStaffEditorPermissions
+from api.mixins import StaffEditorPermissionMixin
 
 
 from .models import Product
@@ -44,24 +45,23 @@ class ProductMixinView(mixins.CreateModelMixin,
         return self.create(request, *args, **kwargs)
 
 
-class ProductDetailAPIView(generics.RetrieveAPIView):
+class ProductDetailAPIView(StaffEditorPermissionMixin, generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    authentication_classes = [authentication.SessionAuthentication]
+    # authentication_classes = [authentication.SessionAuthentication]
     # permission_classes = [permissions.DjangoModelPermissions]
     # permission_classes = [IsStaffEditorPermissions]
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
-
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
     #lookup_field = "pk"
 
 
-class ProductUpdateAPIView(generics.UpdateAPIView):
+class ProductUpdateAPIView(StaffEditorPermissionMixin, generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    authentication_classes = [authentication.SessionAuthentication]
+    # authentication_classes = [authentication.SessionAuthentication]
     # permission_classes = [permissions.DjangoModelPermissions]
     # permission_classes = [IsStaffEditorPermissions]
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
     lookup_field = 'pk'
 
     def perform_update(self, serializer):
@@ -70,28 +70,28 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
             instance.content = "Add Something Later On"
 
 
-class ProductDeleteAPIView(generics.DestroyAPIView):
+class ProductDeleteAPIView(StaffEditorPermissionMixin, generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # permission_classes = [permissions.DjangoModelPermissions]
     # permission_classes = [IsStaffEditorPermissions]
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
-    authentication_classes = [authentication.SessionAuthentication]
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
+    # authentication_classes = [authentication.SessionAuthentication]
     lookup_field = 'pk'
 
     def perform_destroy(self, instance):
         super().perform_destroy(instance)
 
 
-class ProductListCreateAPIView(generics.ListCreateAPIView):
+class ProductListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # authentication_classes = [authentication.SessionAuthentication, authentication.TokenAuthentication]
-    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+    # authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # permission_classes = [permissions.DjangoModelPermissions]
     # permission_classes = [IsStaffEditorPermissions]
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermissions]
 
 
     def perform_create(self, serializer):
