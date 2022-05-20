@@ -8,6 +8,7 @@ from .permissions import IsStaffEditorPermissions
 from api.mixins import StaffEditorPermissionMixin, UserQuerySetMixin
 
 
+
 from .models import Product
 from .serializers import ProductSerializer
 from django.shortcuts import get_object_or_404
@@ -160,3 +161,21 @@ def product_alt_view(request, pk=None, *args, **kwargs):
             return Response(serializer.data)
         # return Response({"invalid": "not good data title is missing"}, status=400)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# Search View
+class SearchListView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        q = self.request.GET.get('q')
+        results = Product.objects.none()
+        if q is not None:
+            user = None
+            if self.request.user.is_authenticated:
+                user = self.request.user
+            results = qs.search(q, user=user)
+        return results
