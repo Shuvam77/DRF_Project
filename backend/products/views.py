@@ -1,4 +1,3 @@
-from requests import request
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -6,6 +5,7 @@ from rest_framework import generics, mixins, permissions, authentication
 from api.authentication import TokenAuthentication
 from .permissions import IsStaffEditorPermissions
 from api.mixins import StaffEditorPermissionMixin, UserQuerySetMixin
+from . import client
 
 
 
@@ -179,3 +179,21 @@ class SearchListView(generics.ListAPIView):
                 user = self.request.user
             results = qs.search(q, user=user)
         return results
+
+
+class SearchAListView(generics.GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        user = None
+        if request.user.is_authenticated:
+            user = request.user.username
+        public = str(request.GET.get('public')) != "0"
+        query = request.GET.get('q')
+        # tag = request.GET.get('tag') or None
+        if not query:
+            return Response('', status=400)
+        
+        # results = client.perform_search(query, tag=tag, user=user, public=public)
+
+        results = client.perform_search(query, user=user, public=public)
+        return Response(results)
